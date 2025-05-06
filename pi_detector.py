@@ -44,6 +44,7 @@ class ThresholdAlarm:
             msgs.append("💧 ZA WILGOTNO!")
         return "  ".join(msgs) if msgs else "OK"
 
+i = 0
 # === 3. Stub predykcji ===
 history = list()
 class TempPredictor:
@@ -52,6 +53,8 @@ class TempPredictor:
     def add(self, t):
         if t is not None:
             history.append(t)
+            i =+ 1
+            print(i)
             print(f"Historia: {len(history)}")
             print(f"Historia: {history}")
 
