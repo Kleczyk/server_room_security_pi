@@ -67,13 +67,13 @@ alarm     = ThresholdAlarm()
 predictor = TempPredictor()
 stop_ev   = Event()
 
-def bg_loop():
-    while not stop_ev.is_set():
-        t, h = reader.read()
-        predictor.add(t)
-        time.sleep(10)
+# def bg_loop():
+#     while not stop_ev.is_set():
+#         t, h = reader.read()
+#         predictor.add(t)
+#         time.sleep(10)
 
-Thread(target=bg_loop, daemon=True).start()
+# Thread(target=bg_loop, daemon=True).start()
 
 # === 5. Streamlit UI ===
 st.set_page_config(page_title="Monitor serwerowni", layout="wide")
