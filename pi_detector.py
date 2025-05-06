@@ -20,6 +20,7 @@ class AM2302Reader:
         try:
             t = self.dht.temperature
             h = self.dht.humidity
+            print(f"t: {t}, h: {h}")
         except RuntimeError:
             return None, None
         return t, h
