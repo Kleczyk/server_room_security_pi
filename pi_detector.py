@@ -61,7 +61,7 @@ class TempPredictor:
         return last3[-1] + trend * horizon
 
 # === 4. Inicjalizacja ===
-reader    = AM2302Reader(pin=4)    # zmień na swój GPIO
+reader    = AM2302Reader(pin=3)    # zmień na swój GPIO
 alarm     = ThresholdAlarm()
 predictor = TempPredictor()
 stop_ev   = Event()
@@ -70,7 +70,6 @@ def bg_loop():
     while not stop_ev.is_set():
         t, h = reader.read()
         predictor.add(t)
-        print(t, h)
         time.sleep(5)
 
 Thread(target=bg_loop, daemon=True).start()
