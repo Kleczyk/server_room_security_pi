@@ -1,5 +1,3 @@
-# app.py
-
 import time
 import board
 import adafruit_dht
@@ -46,8 +44,8 @@ class ThresholdAlarm:
 
 # === 3. Stub predykcji ===
 class TempPredictor:
-    def __init__(self):
-        self.history = []
+    def __init__(self, history=None):
+        self.history = history if history is not None else []
 
     def add(self, t):
         if t is not None:
@@ -56,36 +54,21 @@ class TempPredictor:
                 self.history.pop(0)
 
     def predict(self, horizon=60, window_size=60):
-        """
-        Przewiduje temperaturę na podstawie historii danych za pomocą regresji liniowej.
-
-        Args:
-            history (list): Lista wartości temperaturowych (np. [20.1, 20.5, ...]).
-            horizon (int): Liczba kroków w przyszłość do przewidzenia (domyślnie 1).
-            window_size (int): Liczba poprzednich wartości użytych jako cechy (domyślnie 10).
-
-        Returns:
-            float: Przewidywana wartość temperatury lub ostatnia wartość z historii, jeśli za mało danych.
-        """
-        # Sprawdzenie, czy jest wystarczająco dużo danych
         if len(self.history) < window_size + 1:
             return self.history[-1] if self.history else None
-        print(f"Historia: {len((self.history))}")
-        # Przygotowanie danych: cechy (okno) i cel (następna wartość)
+        print(f"Historia: {len(self.history)}")
         X, y = [], []
         for i in range(len(self.history) - window_size):
             X.append(self.history[i:i + window_size])
             y.append(self.history[i + window_size])
         X, y = np.array(X), np.array(y)
 
-        # Trenowanie modelu
         model = LinearRegression()
         try:
             model.fit(X, y)
         except Exception:
             return self.history[-1] if self.history else None
 
-        # Predykcja krok po kroku
         current_window = np.array(self.history[-window_size:]).reshape(1, -1)
         for _ in range(horizon):
             pred = model.predict(current_window)[0]
@@ -95,12 +78,15 @@ class TempPredictor:
         return pred
 
 # === 4. Inicjalizacja ===
-reader    = AM2302Reader(pin=4)    # zmień na swój GPIO
-alarm     = ThresholdAlarm()
-predictor = TempPredictor()
-stop_ev   = Event()
+# Inicjalizacja sesji stanu dla historii
+if 'history' not in st.session_state:
+    st.session_state.history = []
 
-
+# Inicjalizacja obiektów
+reader = AM2302Reader(pin=4)  # zmień na swój GPIO
+alarm = ThresholdAlarm()
+predictor = TempPredictor(history=st.session_state.history)
+stop_ev = Event()
 
 # === 5. Streamlit UI ===
 st.set_page_config(page_title="Monitor serwerowni", layout="wide")
@@ -109,15 +95,18 @@ st.title("🌡️ Monitor temperatury i wilgotności")
 with st.sidebar:
     st.header("⚙️ Ustawienia progów alarmu")
     temp_thresh = st.slider("Próg temperatury (°C)", -10.0, 100.0, 30.0, 0.1)
-    hum_thresh  = st.slider("Próg wilgotności (%)", 0, 100, 60, 1)
+    hum_thresh = st.slider("Próg wilgotności (%)", 0, 100, 60, 1)
 
 alarm.update(temp_thresh, hum_thresh)
-# automatyczne odświeżanie co 5 sekund
+
+# Automatyczne odświeżanie co 1 sekundę
 st_autorefresh(interval=1000, limit=None, key="timer")
 
 # Pobierz i oblicz
 t_cur, h_cur = reader.read()
 predictor.add(t_cur)
+# Aktualizacja historii w session_state
+st.session_state.history = predictor.history
 t_pred = predictor.predict()
 status = alarm.check(t_cur, h_cur)
 
