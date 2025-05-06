@@ -7,6 +7,7 @@ import numpy as np
 import streamlit as st
 from threading import Thread, Event
 from streamlit_autorefresh import st_autorefresh
+from sklearn.linear_model import LinearRegression
 
 # === 1. Moduł odczytu z czujnika ===
 class AM2302Reader:
@@ -54,12 +55,44 @@ class TempPredictor:
             if len(self.history) > 1000:
                 self.history.pop(0)
 
-    def predict(self, horizon=10000):
-        if len(self.history) < 3:
-            return self.history[-1] if self.history else None
-        last3 = self.history[-3:]
-        trend = (last3[-1] - last3[0]) / len(last3)
-        return last3[-1] + trend * horizon
+    def predict(history, horizon=1, window_size=10):
+        """
+        Przewiduje temperaturę na podstawie historii danych za pomocą regresji liniowej.
+
+        Args:
+            history (list): Lista wartości temperaturowych (np. [20.1, 20.5, ...]).
+            horizon (int): Liczba kroków w przyszłość do przewidzenia (domyślnie 1).
+            window_size (int): Liczba poprzednich wartości użytych jako cechy (domyślnie 10).
+
+        Returns:
+            float: Przewidywana wartość temperatury lub ostatnia wartość z historii, jeśli za mało danych.
+        """
+        # Sprawdzenie, czy jest wystarczająco dużo danych
+        if len(history) < window_size + 1:
+            return history[-1] if history else None
+
+        # Przygotowanie danych: cechy (okno) i cel (następna wartość)
+        X, y = [], []
+        for i in range(len(history) - window_size):
+            X.append(history[i:i + window_size])
+            y.append(history[i + window_size])
+        X, y = np.array(X), np.array(y)
+
+        # Trenowanie modelu
+        model = LinearRegression()
+        try:
+            model.fit(X, y)
+        except Exception:
+            return history[-1] if history else None
+
+        # Predykcja krok po kroku
+        current_window = np.array(history[-window_size:]).reshape(1, -1)
+        for _ in range(horizon):
+            pred = model.predict(current_window)[0]
+            current_window = np.roll(current_window, -1)
+            current_window[0, -1] = pred
+
+        return pred
 
 # === 4. Inicjalizacja ===
 reader    = AM2302Reader(pin=4)    # zmień na swój GPIO
