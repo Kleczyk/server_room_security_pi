@@ -45,16 +45,16 @@ class ThresholdAlarm:
         return "  ".join(msgs) if msgs else "OK"
 
 # === 3. Stub predykcji ===
+history = list()
 class TempPredictor:
-    def __init__(self):
-        self.history = []
+
 
     def add(self, t):
         if t is not None:
-            self.history.append(t)
-            print(f"Historia: {len(self.history)}")
-            if len(self.history) > 1000:
-                self.history.pop(0)
+            history.append(t)
+            print(f"Historia: {len(history)}")
+            if len(history) > 1000:
+                history.pop(0)
 
     def predict(self, horizon=60, window_size=60):
         """
@@ -69,14 +69,14 @@ class TempPredictor:
             float: Przewidywana wartość temperatury lub ostatnia wartość z historii, jeśli za mało danych.
         """
         # Sprawdzenie, czy jest wystarczająco dużo danych
-        if len(self.history) < window_size + 1:
-            return self.history[-1] if self.history else None
-        print(f"Historia: {len((self.history))}")
+        if len(history) < window_size + 1:
+            return history[-1] if history else None
+        print(f"Historia: {len((history))}")
         # Przygotowanie danych: cechy (okno) i cel (następna wartość)
         X, y = [], []
-        for i in range(len(self.history) - window_size):
-            X.append(self.history[i:i + window_size])
-            y.append(self.history[i + window_size])
+        for i in range(len(history) - window_size):
+            X.append(history[i:i + window_size])
+            y.append(history[i + window_size])
         X, y = np.array(X), np.array(y)
 
         # Trenowanie modelu
@@ -84,10 +84,10 @@ class TempPredictor:
         try:
             model.fit(X, y)
         except Exception:
-            return self.history[-1] if self.history else None
+            return history[-1] if history else None
 
         # Predykcja krok po kroku
-        current_window = np.array(self.history[-window_size:]).reshape(1, -1)
+        current_window = np.array(history[-window_size:]).reshape(1, -1)
         for _ in range(horizon):
             pred = model.predict(current_window)[0]
             current_window = np.roll(current_window, -1)
