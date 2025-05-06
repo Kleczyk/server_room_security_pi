@@ -1,20 +1,35 @@
 import time
 from threading import Thread, Event
-
-import Adafruit_DHT
 import gradio as gr
-import numpy as np
-
 # === 1. Moduł odczytu z czujnika ===
+import board
+import adafruit_dht
+
 class AM2302Reader:
-    def __init__(self, pin: int = 8, sensor=Adafruit_DHT.AM2302):
-        self.pin = pin
-        self.sensor = sensor
+    """
+    Odczyt z czujnika DHT22 (AM2302) za pomocą adafruit-circuitpython-dht.
+    Parametr pin podajemy jako BCM GPIO number, np. 8 → board.D8.
+    """
+    def __init__(self, pin: int = 4):
+        # mapowanie BCM → board.Dx
+        pin_attr = f"D{pin}"
+        if not hasattr(board, pin_attr):
+            raise ValueError(f"Pin BCM{pin} nie istnieje w module board")
+        self.dht = adafruit_dht.DHT22(getattr(board, pin_attr), use_pulseio=False)
 
     def read(self):
-        """Zwraca (temp_C: float lub None, humidity_%: float lub None)"""
-        humidity, temp = Adafruit_DHT.read_retry(self.sensor, self.pin)
-        return temp, humidity
+        """
+        Zwraca (temp_C: float lub None, humidity_%: float lub None).
+        W razie błędu zwraca (None, None), więc trzeba obsłużyć None w wyższej logice.
+        """
+        try:
+            temp = self.dht.temperature
+            hum  = self.dht.humidity
+        except RuntimeError:
+            # czujnik czasem nie odpowiada na pierwszy pomiar
+            return None, None
+        return temp, hum
+
 
 # === 2. Moduł progowania i alarmów ===
 class ThresholdAlarm:
