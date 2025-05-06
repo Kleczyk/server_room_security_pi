@@ -70,7 +70,6 @@ stop_ev   = Event()
 def bg_loop():
     while not stop_ev.is_set():
         t, h = reader.read()
-        print(f"t: {t}, h: {h}")
         predictor.add(t)
         time.sleep(5)
 
@@ -86,10 +85,8 @@ with st.sidebar:
     hum_thresh  = st.slider("Próg wilgotności (%)", 0, 100, 60, 1)
 
 alarm.update(temp_thresh, hum_thresh)
-
 # automatyczne odświeżanie co 5 sekund
 st_autorefresh(interval=5000, limit=None, key="timer")
-print("############")
 
 # Pobierz i oblicz
 t_cur, h_cur = reader.read()
