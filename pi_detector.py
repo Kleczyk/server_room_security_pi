@@ -89,6 +89,7 @@ alarm.update(temp_thresh, hum_thresh)
 
 # automatyczne odświeżanie co 5 sekund
 st_autorefresh(interval=5000, limit=None, key="timer")
+print("############")
 
 # Pobierz i oblicz
 t_cur, h_cur = reader.read()
