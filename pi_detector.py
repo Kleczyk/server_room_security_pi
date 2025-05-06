@@ -70,7 +70,7 @@ class TempPredictor:
         # Sprawdzenie, czy jest wystarczająco dużo danych
         if len(self.history) < window_size + 1:
             return self.history[-1] if self.history else None
-
+        print(f"Historia: {len((self.history))}")
         # Przygotowanie danych: cechy (okno) i cel (następna wartość)
         X, y = [], []
         for i in range(len(self.history) - window_size):
