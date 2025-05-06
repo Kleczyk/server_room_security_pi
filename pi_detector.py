@@ -80,7 +80,7 @@ with st.sidebar:
 
 alarm.update(temp_thresh, hum_thresh)
 # automatyczne odświeżanie co 5 sekund
-st_autorefresh(interval=5000, limit=None, key="timer")
+st_autorefresh(interval=1000, limit=None, key="timer")
 
 # Pobierz i oblicz
 t_cur, h_cur = reader.read()
