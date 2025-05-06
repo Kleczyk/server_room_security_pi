@@ -54,7 +54,7 @@ class TempPredictor:
             if len(self.history) > 1000:
                 self.history.pop(0)
 
-    def predict(self, horizon=10):
+    def predict(self, horizon=10000):
         if len(self.history) < 3:
             return self.history[-1] if self.history else None
         last3 = self.history[-3:]
