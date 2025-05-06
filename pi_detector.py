@@ -53,7 +53,7 @@ class TempPredictor:
             if len(self.history) > 1000:
                 self.history.pop(0)
 
-    def predict(self, horizon=60, window_size=60):
+    def predict(self, horizon=600, window_size=2000):
         if len(self.history) < window_size + 1:
             return self.history[-1] if self.history else None
         print(f"Historia: {len(self.history)}")
@@ -100,7 +100,7 @@ with st.sidebar:
 alarm.update(temp_thresh, hum_thresh)
 
 # Automatyczne odświeżanie co 1 sekundę
-st_autorefresh(interval=1000, limit=None, key="timer")
+st_autorefresh(interval=100, limit=None, key="timer")
 
 # Pobierz i oblicz
 t_cur, h_cur = reader.read()
