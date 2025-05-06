@@ -69,6 +69,7 @@ stop_ev   = Event()
 def bg_loop():
     while not stop_ev.is_set():
         t, h = reader.read()
+        print(f"t: {t}, h: {h}")
         predictor.add(t)
         time.sleep(5)
 
