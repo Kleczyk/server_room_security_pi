@@ -55,7 +55,7 @@ class TempPredictor:
             if len(self.history) > 1000:
                 self.history.pop(0)
 
-    def predict(self, horizon=1, window_size=10):
+    def predict(self, horizon=60, window_size=60):
         """
         Przewiduje temperaturę na podstawie historii danych za pomocą regresji liniowej.
 
