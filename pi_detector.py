@@ -71,6 +71,7 @@ def bg_loop():
     while not stop_ev.is_set():
         t, h = reader.read()
         predictor.add(t)
+        time.sleep(10)
 
 Thread(target=bg_loop, daemon=True).start()
 
