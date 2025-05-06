@@ -52,6 +52,7 @@ class TempPredictor:
     def add(self, t):
         if t is not None:
             self.history.append(t)
+            print(f"Historia: {len(self.history)}")
             if len(self.history) > 1000:
                 self.history.pop(0)
 
