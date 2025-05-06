@@ -126,4 +126,4 @@ with gr.Blocks(title="Monitor serwerowni (Raspberry Pi + DHT22)") as demo:
 
     gr.Markdown("> ⚙️ Ten interfejs możesz łatwo rozbudować o wykres historii, zaawansowany model predykcji czy powiadomienia e-mail/SMS.")
 
-demo.launch(server_name="0.0.0.0", server_port=7860)
+demo.launch(server_name="0.0.0.0", server_port=7860, share=True)
