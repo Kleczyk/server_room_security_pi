@@ -55,7 +55,7 @@ class TempPredictor:
             if len(self.history) > 1000:
                 self.history.pop(0)
 
-    def predict(self, history, horizon=1, window_size=10):
+    def predict(self, horizon=1, window_size=10):
         """
         Przewiduje temperaturę na podstawie historii danych za pomocą regresji liniowej.
 
@@ -68,14 +68,14 @@ class TempPredictor:
             float: Przewidywana wartość temperatury lub ostatnia wartość z historii, jeśli za mało danych.
         """
         # Sprawdzenie, czy jest wystarczająco dużo danych
-        if len(history) < window_size + 1:
-            return history[-1] if history else None
+        if len(self.history) < window_size + 1:
+            return self.history[-1] if self.history else None
 
         # Przygotowanie danych: cechy (okno) i cel (następna wartość)
         X, y = [], []
-        for i in range(len(history) - window_size):
-            X.append(history[i:i + window_size])
-            y.append(history[i + window_size])
+        for i in range(len(self.history) - window_size):
+            X.append(self.history[i:i + window_size])
+            y.append(self.history[i + window_size])
         X, y = np.array(X), np.array(y)
 
         # Trenowanie modelu
@@ -83,10 +83,10 @@ class TempPredictor:
         try:
             model.fit(X, y)
         except Exception:
-            return history[-1] if history else None
+            return self.history[-1] if self.history else None
 
         # Predykcja krok po kroku
-        current_window = np.array(history[-window_size:]).reshape(1, -1)
+        current_window = np.array(self.history[-window_size:]).reshape(1, -1)
         for _ in range(horizon):
             pred = model.predict(current_window)[0]
             current_window = np.roll(current_window, -1)
