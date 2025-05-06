@@ -67,13 +67,7 @@ alarm     = ThresholdAlarm()
 predictor = TempPredictor()
 stop_ev   = Event()
 
-# def bg_loop():
-#     while not stop_ev.is_set():
-#         t, h = reader.read()
-#         predictor.add(t)
-#         time.sleep(10)
 
-# Thread(target=bg_loop, daemon=True).start()
 
 # === 5. Streamlit UI ===
 st.set_page_config(page_title="Monitor serwerowni", layout="wide")
@@ -81,7 +75,7 @@ st.title("🌡️ Monitor temperatury i wilgotności")
 
 with st.sidebar:
     st.header("⚙️ Ustawienia progów alarmu")
-    temp_thresh = st.slider("Próg temperatury (°C)", 0.0, 50.0, 30.0, 0.1)
+    temp_thresh = st.slider("Próg temperatury (°C)", -10.0, 100.0, 30.0, 0.1)
     hum_thresh  = st.slider("Próg wilgotności (%)", 0, 100, 60, 1)
 
 alarm.update(temp_thresh, hum_thresh)
