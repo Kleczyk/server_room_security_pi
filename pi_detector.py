@@ -119,10 +119,10 @@ with gr.Blocks(title="Monitor serwerowni (Raspberry Pi + DHT22)") as demo:
                                  label="Próg wilgotności (%)",  value=60 )
 
     # co 5s odświeżaj
+
     demo.load(fn=gradio_update,
               inputs=[temp_slider, hum_slider],
-              outputs=[temp_disp, hum_disp, pred_disp, alarm_disp],
-              every=5)
+              outputs=[temp_disp, hum_disp, pred_disp, alarm_disp])
 
     gr.Markdown("> ⚙️ Ten interfejs możesz łatwo rozbudować o wykres historii, zaawansowany model predykcji czy powiadomienia e-mail/SMS.")
 
