@@ -62,7 +62,7 @@ class TempPredictor:
         return last3[-1] + trend * horizon
 
 # === 4. Inicjalizacja ===
-reader    = AM2302Reader(pin=7)    # zmień na swój GPIO
+reader    = AM2302Reader(pin=4)    # zmień na swój GPIO
 alarm     = ThresholdAlarm()
 predictor = TempPredictor()
 stop_ev   = Event()
