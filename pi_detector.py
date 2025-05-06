@@ -7,7 +7,7 @@ import numpy as np
 
 # === 1. Moduł odczytu z czujnika ===
 class AM2302Reader:
-    def __init__(self, pin: int = 4, sensor=Adafruit_DHT.AM2302):
+    def __init__(self, pin: int = 8, sensor=Adafruit_DHT.AM2302):
         self.pin = pin
         self.sensor = sensor
 
