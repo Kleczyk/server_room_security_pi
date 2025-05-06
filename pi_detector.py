@@ -53,7 +53,7 @@ class TempPredictor:
             if len(self.history) > 1000:
                 self.history.pop(0)
 
-    def predict(self, horizon=60, window_size=2000):
+    def predict(self, horizon=60, window_size=100):
         if len(self.history) < window_size + 1:
             return self.history[-1] if self.history else None
         print(f"Historia: {len(self.history)}")
