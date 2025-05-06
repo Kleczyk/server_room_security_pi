@@ -10,7 +10,7 @@ from streamlit_autorefresh import st_autorefresh
 
 # === 1. Moduł odczytu z czujnika ===
 class AM2302Reader:
-    def __init__(self, pin: int = 3):
+    def __init__(self, pin: int = 8):
         pin_attr = f"D{pin}"
         if not hasattr(board, pin_attr):
             raise ValueError(f"Pin BCM{pin} nie istnieje w module board")
