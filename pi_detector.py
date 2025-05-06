@@ -105,7 +105,6 @@ else:
 
 st.markdown(
     """
-    > Aplikacja odświeża się automatycznie co 5 s.  
-    > W przyszłości możesz tu dorzucić wykres historii, mail/SMS-owe powiadomienia czy zaawansowany model ML.
+    Autorzy: **Michał Kocik**, **Daniel Kleczyński**
     """
 )
