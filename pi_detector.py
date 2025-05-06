@@ -118,7 +118,7 @@ st_autorefresh(interval=1000, limit=None, key="timer")
 # Pobierz i oblicz
 t_cur, h_cur = reader.read()
 predictor.add(t_cur)
-t_pred = predictor.predict(10)
+t_pred = predictor.predict()
 status = alarm.check(t_cur, h_cur)
 
 # --- Wyświetlenie metryk ---
