@@ -4,3 +4,5 @@ adafruit-blinka>=8.0.0
 adafruit-circuitpython-dht>=3.0.0
 scikit-learn>=1.0
 pandas>=1.3.0
+streamlit>=1.25.0
+streamlit-autorefresh>=0.1.1
